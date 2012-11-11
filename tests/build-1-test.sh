@@ -11,6 +11,15 @@
 
 describe "build"
 
-it_runs_without_arguments() {
-    rerun nexus:build
+it_fails_without_arguments() {
+    rerun nexus:build || return 0
+}
+
+it_can_build_nexus() {
+   processor=$(uname -p)
+   tmpDir="$(mktemp -d)/nexus"
+   cp -r ${RERUN_MODULES}/nexus/examples/build/nexus ${tmpDir}
+   rerun  nexus: build --release 1 --version 2.0.6 --directory "${tmpDir}"
+   rpm -qip "${tmpDir}/RPMS/${processor}/nexus-2.0.6-1.${processor}.rpm"
+   rm -rf "${tmpDir}"
 }
